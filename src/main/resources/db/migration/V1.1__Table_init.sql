@@ -1,0 +1,27 @@
+CREATE TABLE brands
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE types
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE models
+(
+    id       VARCHAR PRIMARY KEY,
+    name     VARCHAR(50) NOT NULL ,
+    year     INT NOT NULL,
+    brand_id BIGINT NOT NULL REFERENCES brands (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT models_ck UNIQUE (name, year, brand_id)
+);
+
+CREATE TABLE models_types
+(
+    model_id VARCHAR NOT NULL REFERENCES models (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    type_id  BIGINT NOT NULL REFERENCES types (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT model_type UNIQUE (model_id, type_id)
+);
