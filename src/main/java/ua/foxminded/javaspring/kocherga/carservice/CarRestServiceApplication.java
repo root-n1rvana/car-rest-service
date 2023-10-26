@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ua.foxminded.javaspring.kocherga.carservice.service.ModelService;
-import ua.foxminded.javaspring.kocherga.carservice.service.impl.ModelServiceImpl;
 
 @SpringBootApplication
 public class CarRestServiceApplication {

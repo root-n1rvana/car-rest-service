@@ -3,7 +3,6 @@ package ua.foxminded.javaspring.kocherga.carservice.controllers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ua.foxminded.javaspring.kocherga.carservice.models.dto.BrandDto;
 import ua.foxminded.javaspring.kocherga.carservice.service.BrandService;
@@ -11,7 +10,7 @@ import ua.foxminded.javaspring.kocherga.carservice.service.BrandService;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/brand")
 public class BrandRestControllerV1 {
 
@@ -41,20 +40,20 @@ public class BrandRestControllerV1 {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateBrand(@PathVariable("id") Long id, @RequestBody @Valid BrandDto brandDto) {
-        if (!brandService.existsById(id)) {
-            return ResponseEntity.notFound().build();
+        if (brandService.existsById(id)) {
+            brandDto.setId(id);
+            brandService.update(brandDto);
+            return ResponseEntity.noContent().build();
         }
-        brandDto.setId(id);
-        brandService.update(brandDto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBrand(@PathVariable("id") Long id) {
-        if (!brandService.existsById(id)) {
-            return ResponseEntity.notFound().build();
+        if (brandService.existsById(id)) {
+            brandService.delete(id);
+            return ResponseEntity.noContent().build();
         }
-        brandService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }
