@@ -51,7 +51,7 @@ class BrandRestIntegrationControllerV1Test {
         String brandDtoJson = "{\"name\":\"" + testBrandName + "\"}";
 
         // Verify that the brand does not exist in the database
-        assertFalse(brandsRepository.existsByName(testBrandName));
+        assertNull(brandsRepository.findByName(testBrandName));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/brand")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +60,7 @@ class BrandRestIntegrationControllerV1Test {
             .andReturn();
 
         // Verify that the brand was added to the database
-        assertTrue(brandsRepository.existsByName(testBrandName));
+        assertNotNull(brandsRepository.findByName(testBrandName));
 
         // Cleaning after test
         Brand brand = brandsRepository.findByName(testBrandName);

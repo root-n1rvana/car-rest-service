@@ -7,7 +7,5 @@ import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 @Repository
 public interface BrandsRepository extends JpaRepository<Brand, Long> {
 
-    boolean existsByName(String name);
-
     Brand findByName(String name);
 }

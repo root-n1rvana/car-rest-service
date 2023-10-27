@@ -12,21 +12,16 @@ import ua.foxminded.javaspring.kocherga.carservice.repository.ModelRepository;
 import ua.foxminded.javaspring.kocherga.carservice.service.Cache;
 import ua.foxminded.javaspring.kocherga.carservice.service.ModelService;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 @Service
 public class ModelServiceImpl implements ModelService {
 
-    private final static String TYPE_SPLITTER = ",\\s*|,";
-    private final static String FILE_TO_READ = "file.csv";
+    private final static String TYPE_SPLITTER = ",";
+    private final static String FILE_TO_READ = "file.csv"; //todo read file from jar
     private final Cache<String, Brand> brandCache = new Cache<>();
     private final Cache<String, Type> typeCache = new Cache<>();
-
     private final ModelRepository modelRepository;
 
     public ModelServiceImpl(ModelRepository modelRepository) {
@@ -39,32 +34,21 @@ public class ModelServiceImpl implements ModelService {
         saveModelsInBatch(models);
     }
 
-    @Transactional
-    @Override
-    public void saveModelsInBatch(List<Model> models) {
-        for (int i = 0; i < models.size(); i += 500) {
-            int endIndex = Math.min(i + 500, models.size());
-            List<Model> batch = models.subList(i, endIndex);
-            modelRepository.saveAll(batch);
-        }
-    }
-
     private List<RawLine> readAllLines() {
-        List<RawLine> rawLines = Collections.emptyList();
-        try {
-            File file = new ClassPathResource(FILE_TO_READ).getFile();
-            try (FileReader fileReader = new FileReader(file)) {
-                rawLines = new CsvToBeanBuilder<RawLine>(fileReader)
-                    .withType(RawLine.class)
-                    .withSkipLines(1)
-                    .build()
-                    .parse();
+        try (InputStream inputStream = new ClassPathResource(FILE_TO_READ).getInputStream()) {
+            List<RawLine> rawLines = new CsvToBeanBuilder<RawLine>(new InputStreamReader(inputStream))
+                .withType(RawLine.class)
+                .withSkipLines(1)
+                .build()
+                .parse();
+            if (!rawLines.isEmpty()) {
+                rawLines.remove(rawLines.size() - 1);
             }
+            return rawLines;
         } catch (IOException e) {
             e.printStackTrace();
+            return Collections.emptyList();
         }
-        rawLines.remove(rawLines.size() - 1);
-        return rawLines;
     }
 
     private List<Model> createModelsFromRawLines(List<RawLine> lines) {
@@ -86,12 +70,12 @@ public class ModelServiceImpl implements ModelService {
     }
 
     private Brand getBrandOrMakeNewIfNotExist(RawLine line) {
-        Brand brand = brandCache.getValue(line.getBrandName());
-        if (brand == null) {
-            brand = new Brand(line.getBrandName());
-            brandCache.putValue(line.getBrandName(), brand);
-        }
-        return brand;
+        return Optional.ofNullable(brandCache.getValue(line.getBrandName()))
+            .orElseGet(() -> {
+                Brand brand = new Brand(line.getBrandName());
+                brandCache.putValue(line.getBrandName(), brand);
+                return brand;
+            });
     }
 
     private List<Type> getTypeOrMakeNewIfNotExist(RawLine line) {
@@ -99,14 +83,20 @@ public class ModelServiceImpl implements ModelService {
         String[] typeNames = line.getTypeName().split(TYPE_SPLITTER);
         int index = 0;
         while (index < typeNames.length) {
-            Type type = typeCache.getValue(typeNames[index]);
+            Type type = typeCache.getValue(typeNames[index].trim());
             if (type == null) {
-                type = new Type(typeNames[index]);
-                typeCache.putValue(typeNames[index], type);
+                type = new Type(typeNames[index].trim());
+                typeCache.putValue(typeNames[index].trim(), type);
             }
             types.add(type);
             index++;
         }
         return types;
+    }
+
+    @Transactional
+    @Override
+    public void saveModelsInBatch(List<Model> models) {
+            modelRepository.saveAll(models);
     }
 }

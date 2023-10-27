@@ -12,11 +12,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/brand")
-public class BrandRestControllerV1 {
+public class BrandRestController {
 
     private final BrandService brandService;
 
-    public BrandRestControllerV1(BrandService brandService) {
+    public BrandRestController(BrandService brandService) {
         this.brandService = brandService;
     }
 
@@ -40,20 +40,14 @@ public class BrandRestControllerV1 {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateBrand(@PathVariable("id") Long id, @RequestBody @Valid BrandDto brandDto) {
-        if (brandService.existsById(id)) {
             brandDto.setId(id);
             brandService.update(brandDto);
             return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBrand(@PathVariable("id") Long id) {
-        if (brandService.existsById(id)) {
             brandService.delete(id);
             return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
     }
 }
