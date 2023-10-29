@@ -40,14 +40,14 @@ public class BrandRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateBrand(@PathVariable("id") Long id, @RequestBody @Valid BrandDto brandDto) {
-            brandDto.setId(id);
-            brandService.update(brandDto);
-            return ResponseEntity.noContent().build();
+        brandDto.setId(id);
+        brandService.update(brandDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBrand(@PathVariable("id") Long id) {
-            brandService.delete(id);
-            return ResponseEntity.noContent().build();
+        brandService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

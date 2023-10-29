@@ -1,7 +1,6 @@
 package ua.foxminded.javaspring.kocherga.carservice.models.dto;
 
-import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
-import ua.foxminded.javaspring.kocherga.carservice.models.Type;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -9,18 +8,23 @@ public class ModelDto {
 
     private String id;
 
+    @NotEmpty
+    @NotNull
+    @Size(min = 2, max = 50, message = "Model name should have at least 2 and max 50 characters")
     private String name;
 
+//    @Min(value = 1900, message = "Year must be a four-digit number more than 1900")
+//    @Max(value = 2050, message = "Year must be a four-digit number less than 2050")
     private int year;
 
-    private Brand brand;
+    private BrandDto brand;
 
-    private List<Type> types;
+    private List<TypeDto> types;
 
     public ModelDto() {
     }
 
-    public ModelDto(String id, String name, int year, Brand brand, List<Type> types) {
+    public ModelDto(String id, String name, int year, BrandDto brand, List<TypeDto> types) {
         this.id = id;
         this.name = name;
         this.year = year;
@@ -52,19 +56,19 @@ public class ModelDto {
         this.year = year;
     }
 
-    public Brand getBrand() {
+    public BrandDto getBrand() {
         return brand;
     }
 
-    public void setBrand(Brand brand) {
+    public void setBrand(BrandDto brand) {
         this.brand = brand;
     }
 
-    public List<Type> getTypes() {
+    public List<TypeDto> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Type> types) {
+    public void setTypes(List<TypeDto> types) {
         this.types = types;
     }
 }

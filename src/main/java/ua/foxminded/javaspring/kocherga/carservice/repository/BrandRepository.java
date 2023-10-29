@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 
-@Repository
-public interface BrandsRepository extends JpaRepository<Brand, Long> {
+import java.util.Optional;
 
-    Brand findByName(String name);
+@Repository
+public interface BrandRepository extends JpaRepository<Brand, Long> {
+
+    Optional<Brand> findByName(String name);
 }

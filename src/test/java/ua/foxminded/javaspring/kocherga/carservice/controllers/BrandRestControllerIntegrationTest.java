@@ -9,7 +9,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
-import ua.foxminded.javaspring.kocherga.carservice.repository.BrandsRepository;
+import ua.foxminded.javaspring.kocherga.carservice.repository.BrandRepository;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class BrandRestIntegrationControllerV1Test {
+class BrandRestControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private BrandsRepository brandsRepository;
+    private BrandRepository brandRepository;
 
     @Test
     public void testGetAllBrands() throws Exception {
@@ -51,7 +53,7 @@ class BrandRestIntegrationControllerV1Test {
         String brandDtoJson = "{\"name\":\"" + testBrandName + "\"}";
 
         // Verify that the brand does not exist in the database
-        assertNull(brandsRepository.findByName(testBrandName));
+        assertFalse(brandRepository.findByName(testBrandName).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/brand")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -60,11 +62,11 @@ class BrandRestIntegrationControllerV1Test {
             .andReturn();
 
         // Verify that the brand was added to the database
-        assertNotNull(brandsRepository.findByName(testBrandName));
+        assertNotNull(brandRepository.findByName(testBrandName));
 
         // Cleaning after test
-        Brand brand = brandsRepository.findByName(testBrandName);
-        brandsRepository.delete(brand);
+        Optional<Brand> brandOptional = brandRepository.findByName(testBrandName);
+        brandOptional.ifPresent(brand -> brandRepository.delete(brand));
     }
 
     @Test
@@ -74,8 +76,8 @@ class BrandRestIntegrationControllerV1Test {
         long existingBrandId = 1;
 
 
-        assertTrue(brandsRepository.findById(existingBrandId).isPresent());
-        assertNotEquals(brandsRepository.findById(existingBrandId).get().getName(), expectedName);
+        assertTrue(brandRepository.findById(existingBrandId).isPresent());
+        assertNotEquals(brandRepository.findById(existingBrandId).get().getName(), expectedName);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand/" + existingBrandId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -84,19 +86,19 @@ class BrandRestIntegrationControllerV1Test {
             .andReturn();
 
         // Verify that the brand name was updated
-        String actualName = brandsRepository.findById(existingBrandId).get().getName();
+        String actualName = brandRepository.findById(existingBrandId).get().getName();
         assertEquals(expectedName, actualName);
 
         //Reverse changes
-        Brand brand = brandsRepository.findById(existingBrandId).get();
+        Brand brand = brandRepository.findById(existingBrandId).get();
         brand.setName("Audi");
-        brandsRepository.save(brand);
+        brandRepository.save(brand);
     }
 
     @Test
     public void testDeleteBrand() throws Exception {
         Brand brandToDelete = new Brand("TEST");
-        brandsRepository.save(brandToDelete);
+        brandRepository.save(brandToDelete);
         long existingBrandId = brandToDelete.getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/brand/" + existingBrandId)
@@ -104,6 +106,6 @@ class BrandRestIntegrationControllerV1Test {
             .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         // Verify that the brand is deleted
-        assertFalse(brandsRepository.existsById(existingBrandId));
+        assertFalse(brandRepository.existsById(existingBrandId));
     }
 }

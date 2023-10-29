@@ -3,35 +3,154 @@ package ua.foxminded.javaspring.kocherga.carservice.service.impl;
 import com.opencsv.bean.CsvToBeanBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 import ua.foxminded.javaspring.kocherga.carservice.models.Model;
 import ua.foxminded.javaspring.kocherga.carservice.models.RawLine;
 import ua.foxminded.javaspring.kocherga.carservice.models.Type;
+import ua.foxminded.javaspring.kocherga.carservice.models.dto.ModelDto;
+import ua.foxminded.javaspring.kocherga.carservice.models.dto.TypeDto;
+import ua.foxminded.javaspring.kocherga.carservice.models.mappers.ModelMapper;
+import ua.foxminded.javaspring.kocherga.carservice.repository.BrandRepository;
 import ua.foxminded.javaspring.kocherga.carservice.repository.ModelRepository;
 import ua.foxminded.javaspring.kocherga.carservice.service.Cache;
 import ua.foxminded.javaspring.kocherga.carservice.service.ModelService;
+import ua.foxminded.javaspring.kocherga.carservice.service.TypeService;
+import ua.foxminded.javaspring.kocherga.carservice.service.exceptions.BadRequestException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
 public class ModelServiceImpl implements ModelService {
 
-    private final static String TYPE_SPLITTER = ",";
-    private final static String FILE_TO_READ = "file.csv"; //todo read file from jar
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final int ID_LENGTH = 10;
+    private static final String TYPE_SPLITTER = ",";
+    private static final String FILE_TO_READ = "file.csv";
     private final Cache<String, Brand> brandCache = new Cache<>();
     private final Cache<String, Type> typeCache = new Cache<>();
     private final ModelRepository modelRepository;
+    private final ModelMapper modelMapper;
+    private final BrandRepository brandRepository;
+    private final TypeService typeService;
 
-    public ModelServiceImpl(ModelRepository modelRepository) {
+    public ModelServiceImpl(ModelRepository modelRepository, ModelMapper modelMapper,
+                            BrandRepository brandRepository, TypeService typeService) {
         this.modelRepository = modelRepository;
+        this.modelMapper = modelMapper;
+        this.brandRepository = brandRepository;
+        this.typeService = typeService;
     }
 
     @Override
     public void init() {
         List<Model> models = createModelsFromRawLines(readAllLines());
         saveModelsInBatch(models);
+    }
+
+    @Override
+    @Transactional
+    public Page<ModelDto> findAll(Pageable pageable) {
+        return modelMapper.modelPageToModelDtoPage(modelRepository.findAll(pageable));
+    }
+
+    @Override
+    public ModelDto findById(String id) {
+        Model model = modelRepository.findById(id).orElseThrow(
+            () -> new EmptyResultDataAccessException("There's no such Model with id " + id, 1));
+        return modelMapper.modelToModelDto(model);
+    }
+
+    @Override
+    @Transactional
+    public ModelDto create(ModelDto modelDto) {
+        Model newModel = new Model();
+        mapModelByModelDto(modelDto, newModel);
+        checkIfModelExist(newModel);
+        newModel.setId(generateUniqueId());
+        Model savedModel = modelRepository.save(newModel);
+        return modelMapper.modelToModelDto(savedModel);
+    }
+
+    @Override
+    @Transactional
+    public void update(ModelDto modelDto) {
+        Model modelToUpdate = modelRepository.findById(modelDto.getId()).orElseThrow(
+            () -> new BadRequestException("There's no such Model with id " + modelDto.getId()));
+        mapModelByModelDto(modelDto, modelToUpdate);
+        checkIfModelExist(modelToUpdate);
+        modelRepository.save(modelToUpdate);
+    }
+
+    @Transactional
+    private void checkIfModelExist(Model model) {
+//        System.out.println(modelRepository.existsByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId()));
+//        System.out.println(model.getName());
+//        System.out.println(model.getYear());
+//        System.out.println(model.getBrand().getId());
+//
+//        if (modelRepository.findByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId()).isPresent()) {
+//            throw new BadRequestException("Model with the same Brand, Name, and Year already exists");
+//        }
+
+        // todo strange things on update model
+        if (modelRepository.existsByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId())) {
+            throw new BadRequestException("Model with same Brand, Name and Year already exists");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void delete(String id) {
+        modelRepository.deleteById(id);
+    }
+
+    private void mapModelByModelDto(ModelDto modelDto, Model model) {
+
+        if (modelDto.getBrand() != null) {
+            Brand brand = brandRepository.findByName(modelDto.getBrand().getName()).orElseThrow(
+                () -> new BadRequestException("Brand not found"));
+            model.setBrand(brand);
+        }
+        if (modelDto.getTypes() != null) {
+            List<TypeDto> typesFromForm = modelDto.getTypes();
+            List<String> typeNames = typesFromForm.stream()
+                .map(TypeDto::getName)
+                .map(String::trim)
+                .toList();
+
+            List<Type> types = typeService.findByNameIn(typeNames);
+
+            if (types.size() != typeNames.size()) {
+                throw new BadRequestException("Not all entered Type's were found");
+            }
+            model.setTypes(types);
+        }
+        if (modelDto.getName() != null) {
+            model.setName(modelDto.getName());
+        }
+        if (modelDto.getYear() > 0) {
+            model.setYear(modelDto.getYear());
+        }
+    }
+
+    public String generateUniqueId() {
+        Random random = new Random();
+        StringBuilder generatedId;
+        do {
+            generatedId = new StringBuilder();
+            for (int i = 0; i < ID_LENGTH; i++) {
+                int index = random.nextInt(CHARACTERS.length());
+                generatedId.append(CHARACTERS.charAt(index));
+            }
+        } while (modelRepository.findById(generatedId.toString()).isPresent());
+        return generatedId.toString();
     }
 
     private List<RawLine> readAllLines() {
@@ -97,6 +216,6 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     @Override
     public void saveModelsInBatch(List<Model> models) {
-            modelRepository.saveAll(models);
+        modelRepository.saveAll(models);
     }
 }

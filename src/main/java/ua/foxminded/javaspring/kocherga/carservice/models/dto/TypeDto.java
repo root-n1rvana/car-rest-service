@@ -1,9 +1,16 @@
 package ua.foxminded.javaspring.kocherga.carservice.models.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class TypeDto {
 
     private Long id;
 
+    @NotEmpty
+    @NotNull
+    @Size(min = 2, max = 50, message = "Type name should have at least 2 and max 50 characters")
     private String name;
 
     public TypeDto() {

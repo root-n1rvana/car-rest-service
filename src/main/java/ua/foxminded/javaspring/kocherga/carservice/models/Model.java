@@ -18,11 +18,11 @@ public class Model {
     @Column(name = "year", length = 4, nullable = false)
     private int year;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(
         name = "models_types",
         joinColumns = @JoinColumn(name = "model_id"),
@@ -85,11 +85,11 @@ public class Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Model model = (Model) o;
-        return year == model.year && id.equals(model.id) && name.equals(model.name) && brand.equals(model.brand);
+        return year == model.year && name.equals(model.name) && brand.equals(model.brand);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, year, brand);
+        return Objects.hash(name, year, brand);
     }
 }
