@@ -1,0 +1,548 @@
+{
+	"info": {
+		"_postman_id": "c0074937-3dde-41b1-9f90-5b26b076539c",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30836853",
+		"_collection_link": "https://www.postman.com/material-architect-63360795/workspace/my-workspace/collection/30836853-c0074937-3dde-41b1-9f90-5b26b076539c?action=share&source=collection_link&creator=30836853"
+	},
+	"item": [
+		{
+			"name": "car-rest-api-kocherga",
+			"item": [
+				{
+					"name": "Brand",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/brand/all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/brand/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"brand",
+										"all"
+									]
+								},
+								"description": "gett all Brands"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/brand/1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/brand/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"brand",
+										"1"
+									]
+								},
+								"description": "get Brand with id=1"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/brand",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"testName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/brand",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"brand"
+									]
+								},
+								"description": "create new Brand with name = testName"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/brand/65",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"newBrandName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/brand/65",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"brand",
+										"65"
+									]
+								},
+								"description": "change brand name with id= 65 to `newBrandName`"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/brand/65",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/brand/65",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"brand",
+										"65"
+									]
+								},
+								"description": "delete brand with id=65"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Type",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/type/all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/type/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"type",
+										"all"
+									]
+								},
+								"description": "Get all Types from db"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/type/1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/type/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"type",
+										"1"
+									]
+								},
+								"description": "get Type with id=1"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/type",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"testName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/type",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"type"
+									]
+								},
+								"description": "create new Type with name = testName"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/type/11",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"newTypeName\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/type/11",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"type",
+										"11"
+									]
+								},
+								"description": "change name of Type with id 11 to `newTypeName`"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/type/11",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/type/11",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"type",
+										"11"
+									]
+								},
+								"description": "delete Type with id = 11"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Model",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/model/all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model",
+										"all"
+									]
+								},
+								"description": "Get first page of Models with default values (page = 0, size = 10)"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/model/cptB1C1NSL",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model/cptB1C1NSL",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model",
+										"cptB1C1NSL"
+									]
+								},
+								"description": "get Model with id = cptB1C1NSL"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/model",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"TEST3\",\r\n    \"year\": 2024,\r\n    \"brand\": {\r\n        \"name\": \"Audi\"\r\n    },\r\n    \"types\": [\r\n        {\r\n            \"name\": \"Coupe\"\r\n        },\r\n        {\r\n            \"name\": \"Sedan\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model"
+									]
+								},
+								"description": "Add new Model with data from json"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/model/jWNjG3Z07X",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"newTestName\",\r\n    \"year\": 2049\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model/jWNjG3Z07X",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model",
+										"jWNjG3Z07X"
+									]
+								},
+								"description": "Chnage name and year (json data) of Model with id = jWNjG3Z07X"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/model/jWNjG3Z07X",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model/jWNjG3Z07X",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model",
+										"jWNjG3Z07X"
+									]
+								},
+								"description": "delete Model with Id = jWNjG3Z07X"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/model/all?page=3&size=20",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/model/all?page=3&size=20",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"model",
+										"all"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "3",
+											"description": "page number"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Model objects in every page"
+										}
+									]
+								},
+								"description": "get Models of page = 3 with page size = 20 rows"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

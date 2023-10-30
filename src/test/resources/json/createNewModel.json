@@ -1,0 +1,15 @@
+{
+    "name": "TestModelName",
+    "year": 2024,
+    "brand": {
+        "name": "Audi"
+    },
+    "types": [
+        {
+            "name": "Coupe"
+        },
+        {
+            "name": "Sedan"
+        }
+    ]
+}
