@@ -108,6 +108,7 @@ class ModelRestControllerIntegrationTest {
 
         modelToDelete.setId(modelIdToDelete);
         modelToDelete.setName("TEST");
+        modelToDelete.setYear(2024);
 
         Brand brand = brandRepository.findByName("Audi").orElseThrow(
             () -> new BadRequestException("Brand with this name does not exist"));
