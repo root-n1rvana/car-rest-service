@@ -8,14 +8,12 @@ public class ModelDto {
 
     private String id;
 
-    @NotEmpty
-    @NotNull
     @Size(min = 2, max = 50, message = "Model name should have at least 2 and max 50 characters")
     private String name;
 
-//    @Min(value = 1900, message = "Year must be a four-digit number more than 1900")
-//    @Max(value = 2050, message = "Year must be a four-digit number less than 2050")
-    private int year;
+    @Min(value = 1900, message = "Year must be a four-digit number more than 1900")
+    @Max(value = 2050, message = "Year must be a four-digit number less than 2050")
+    private Integer year;
 
     private BrandDto brand;
 
@@ -24,7 +22,7 @@ public class ModelDto {
     public ModelDto() {
     }
 
-    public ModelDto(String id, String name, int year, BrandDto brand, List<TypeDto> types) {
+    public ModelDto(String id, String name, Integer year, BrandDto brand, List<TypeDto> types) {
         this.id = id;
         this.name = name;
         this.year = year;
@@ -48,11 +46,11 @@ public class ModelDto {
         this.name = name;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 

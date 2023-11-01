@@ -16,6 +16,10 @@ public class BrandDto {
     public BrandDto() {
     }
 
+    public BrandDto(String name) {
+        this.name = name;
+    }
+
     public BrandDto(Long id, String name) {
         this.id = id;
         this.name = name;

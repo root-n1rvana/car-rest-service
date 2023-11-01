@@ -9,9 +9,7 @@ import java.util.Optional;
 @Repository
 public interface ModelRepository extends JpaRepository<Model, String> {
 
-    boolean existsByNameAndYearAndBrandId(String name, int year, long brandId);
-
-    Optional<Model> findByNameAndYearAndBrandId(String name, int year, long brandId);
+    Optional<Model> findByNameAndYearAndBrandName(String name, int year, String brandName);
 
     Optional<Model> findByName(String name);
 }

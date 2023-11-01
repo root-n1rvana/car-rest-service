@@ -33,7 +33,7 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public TypeDto findById(Long id) {
         Type type = typeRepository.findById(id).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such type with id " + id, 1));
+            () -> new BadRequestException("There's no such type with id " + id));
         return typeMapper.typeToTypeDto(type);
     }
 
@@ -59,7 +59,7 @@ public class TypeServiceImpl implements TypeService {
     @Transactional
     public void update(TypeDto typeDto) {
         Type typeToUpdate = typeRepository.findById(typeDto.getId()).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such type with id " + typeDto.getId(), 1));
+            () -> new BadRequestException("There's no such type with id " + typeDto.getId()));
         typeToUpdate.setName(typeDto.getName());
         typeRepository.save(typeToUpdate);
     }

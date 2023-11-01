@@ -1,6 +1,8 @@
 package ua.foxminded.javaspring.kocherga.carservice.service.impl;
 
 import com.opencsv.bean.CsvToBeanBuilder;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -40,6 +42,9 @@ public class ModelServiceImpl implements ModelService {
     private final BrandRepository brandRepository;
     private final TypeService typeService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public ModelServiceImpl(ModelRepository modelRepository, ModelMapper modelMapper,
                             BrandRepository brandRepository, TypeService typeService) {
         this.modelRepository = modelRepository;
@@ -63,16 +68,16 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public ModelDto findById(String id) {
         Model model = modelRepository.findById(id).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such Model with id " + id, 1));
+            () -> new BadRequestException("There's no such Model with id " + id));
         return modelMapper.modelToModelDto(model);
     }
 
     @Override
     @Transactional
     public ModelDto create(ModelDto modelDto) {
+        checkIfModelExist(modelDto);
         Model newModel = new Model();
-        mapModelByModelDto(modelDto, newModel);
-        checkIfModelExist(newModel);
+        updateModelFields(modelDto, newModel);
         newModel.setId(generateUniqueId());
         Model savedModel = modelRepository.save(newModel);
         return modelMapper.modelToModelDto(savedModel);
@@ -83,26 +88,16 @@ public class ModelServiceImpl implements ModelService {
     public void update(ModelDto modelDto) {
         Model modelToUpdate = modelRepository.findById(modelDto.getId()).orElseThrow(
             () -> new BadRequestException("There's no such Model with id " + modelDto.getId()));
-        mapModelByModelDto(modelDto, modelToUpdate);
-        checkIfModelExist(modelToUpdate);
+        updateModelFields(modelDto, modelToUpdate);
+        entityManager.clear();
+        checkIfModelExist(modelMapper.modelToModelDto(modelToUpdate));
         modelRepository.save(modelToUpdate);
     }
 
-    @Transactional
-    private void checkIfModelExist(Model model) {
-//        System.out.println(modelRepository.existsByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId()));
-//        System.out.println(model.getName());
-//        System.out.println(model.getYear());
-//        System.out.println(model.getBrand().getId());
-//
-//        if (modelRepository.findByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId()).isPresent()) {
-//            throw new BadRequestException("Model with the same Brand, Name, and Year already exists");
-//        }
-
-        // todo strange things on update model
-        if (modelRepository.existsByNameAndYearAndBrandId(model.getName(), model.getYear(), model.getBrand().getId())) {
-            throw new BadRequestException("Model with same Brand, Name and Year already exists");
-        }
+    private void checkIfModelExist(ModelDto modelDto) {
+        modelRepository.findByNameAndYearAndBrandName(modelDto.getName(), modelDto.getYear(), modelDto.getBrand().getName()).ifPresent(modelDb -> {
+            throw new BadRequestException("Model with the same Brand, Name, and Year already exists");
+        });
     }
 
     @Override
@@ -111,33 +106,35 @@ public class ModelServiceImpl implements ModelService {
         modelRepository.deleteById(id);
     }
 
-    private void mapModelByModelDto(ModelDto modelDto, Model model) {
+    private void updateModelFields(ModelDto modelDto, Model model) {
 
-        if (modelDto.getBrand() != null) {
-            Brand brand = brandRepository.findByName(modelDto.getBrand().getName()).orElseThrow(
-                () -> new BadRequestException("Brand not found"));
-            model.setBrand(brand);
-        }
-        if (modelDto.getTypes() != null) {
-            List<TypeDto> typesFromForm = modelDto.getTypes();
-            List<String> typeNames = typesFromForm.stream()
-                .map(TypeDto::getName)
-                .map(String::trim)
-                .toList();
+        Optional.ofNullable(modelDto.getName())
+            .ifPresent(modelName -> model.setName(modelDto.getName()));
 
-            List<Type> types = typeService.findByNameIn(typeNames);
+        Optional.ofNullable(modelDto.getYear())
+            .ifPresent(modelYear -> model.setYear(modelDto.getYear()));
 
-            if (types.size() != typeNames.size()) {
-                throw new BadRequestException("Not all entered Type's were found");
-            }
-            model.setTypes(types);
-        }
-        if (modelDto.getName() != null) {
-            model.setName(modelDto.getName());
-        }
-        if (modelDto.getYear() > 0) {
-            model.setYear(modelDto.getYear());
-        }
+        Optional.ofNullable(modelDto.getBrand())
+            .ifPresent(brandDto -> {
+                Brand b = brandRepository.findByName(brandDto.getName())
+                    .orElseThrow(() -> new BadRequestException("There's no such Brand with name " + brandDto.getName()));
+                model.setBrand(b);
+            });
+
+        Optional.ofNullable(modelDto.getTypes())
+            .ifPresent(typesFromForm -> {
+                List<String> typeNames = typesFromForm.stream()
+                    .map(TypeDto::getName)
+                    .map(String::trim)
+                    .toList();
+
+                List<Type> types = typeService.findByNameIn(typeNames);
+                if (types.size() != typeNames.size()) {
+                    throw new BadRequestException("Not all entered Type's were found");
+                }
+
+                model.setTypes(types);
+            });
     }
 
     public String generateUniqueId() {
@@ -176,13 +173,11 @@ public class ModelServiceImpl implements ModelService {
 
         for (RawLine line : lines) {
             Model newModel = new Model();
-
             newModel.setId(line.getModelId());
             newModel.setName(line.getModelName());
             newModel.setYear(Integer.parseInt((line.getYear())));
             newModel.setBrand(getBrandOrMakeNewIfNotExist(line));
             newModel.setTypes(getTypeOrMakeNewIfNotExist(line));
-
             models.add(newModel);
         }
         return models;

@@ -16,7 +16,7 @@ public class Model {
     private String name;
 
     @Column(name = "year", length = 4, nullable = false)
-    private int year;
+    private Integer year;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "brand_id", nullable = false)
@@ -32,7 +32,7 @@ public class Model {
     public Model() {
     }
 
-    public Model(String id, String name, int year, Brand brand, List<Type> types) {
+    public Model(String id, String name, Integer year, Brand brand, List<Type> types) {
         this.id = id;
         this.name = name;
         this.year = year;
@@ -56,11 +56,11 @@ public class Model {
         this.name = name;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -85,7 +85,7 @@ public class Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Model model = (Model) o;
-        return year == model.year && name.equals(model.name) && brand.equals(model.brand);
+        return name.equals(model.name) && year.equals(model.year) && brand.equals(model.brand);
     }
 
     @Override

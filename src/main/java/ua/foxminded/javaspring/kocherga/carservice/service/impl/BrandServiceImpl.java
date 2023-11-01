@@ -8,6 +8,7 @@ import ua.foxminded.javaspring.kocherga.carservice.models.dto.BrandDto;
 import ua.foxminded.javaspring.kocherga.carservice.models.mappers.BrandMapper;
 import ua.foxminded.javaspring.kocherga.carservice.repository.BrandRepository;
 import ua.foxminded.javaspring.kocherga.carservice.service.BrandService;
+import ua.foxminded.javaspring.kocherga.carservice.service.exceptions.BadRequestException;
 
 import java.util.List;
 
@@ -30,14 +31,14 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public BrandDto findById(Long id) {
         Brand brand = brandRepository.findById(id).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such brand with id " + id, 1));
+            () -> new BadRequestException("There's no such brand with id " + id));
         return brandMapper.brandToBrandDto(brand);
     }
 
     @Override
     public Brand findByName(String name) {
         return brandRepository.findByName(name).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such brand with name " + name, 1));
+            () -> new BadRequestException("There's no such brand with name " + name));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public void update(BrandDto brandDto) {
         Brand brandToUpdate = brandRepository.findById(brandDto.getId()).orElseThrow(
-            () -> new EmptyResultDataAccessException("There's no such brand with id " + brandDto.getId(), 1));
+            () -> new BadRequestException("There's no such brand with id " + brandDto.getId()));
         brandToUpdate.setName(brandDto.getName());
         brandRepository.save(brandToUpdate);
     }
