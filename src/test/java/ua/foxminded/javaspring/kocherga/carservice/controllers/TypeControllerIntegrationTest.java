@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TypeRestControllerIntegrationTest {
+class TypeControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -73,14 +73,14 @@ class TypeRestControllerIntegrationTest {
     @Test
     public void testUpdateType() throws Exception {
         String expectedName = "UpdatedTypeName";
-        String typeDtoJson = "{\"name\":\"" + expectedName + "\"}";
         long existingTypeId = 1;
+        String typeDtoJson = "{\"id\": " + existingTypeId + ",\"name\":\"" + expectedName + "\"}";
 
 
         assertTrue(typeRepository.findById(existingTypeId).isPresent());
         assertNotEquals(typeRepository.findById(existingTypeId).get().getName(), expectedName);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type/" + existingTypeId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(typeDtoJson))
             .andExpect(status().isNoContent())

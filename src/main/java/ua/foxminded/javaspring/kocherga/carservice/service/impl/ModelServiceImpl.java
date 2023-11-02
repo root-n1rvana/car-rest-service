@@ -4,8 +4,8 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,10 @@ import ua.foxminded.javaspring.kocherga.carservice.service.exceptions.BadRequest
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ModelServiceImpl implements ModelService {
@@ -67,8 +70,8 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public ModelDto findById(String id) {
-        Model model = modelRepository.findById(id).orElseThrow(
-            () -> new BadRequestException("There's no such Model with id " + id));
+        Model model = modelRepository.findById(id)
+            .orElseThrow(() -> new BadRequestException("There's no such Model with id " + id));
         return modelMapper.modelToModelDto(model);
     }
 
@@ -86,8 +89,8 @@ public class ModelServiceImpl implements ModelService {
     @Override
     @Transactional
     public void update(ModelDto modelDto) {
-        Model modelToUpdate = modelRepository.findById(modelDto.getId()).orElseThrow(
-            () -> new BadRequestException("There's no such Model with id " + modelDto.getId()));
+        Model modelToUpdate = modelRepository.findById(modelDto.getId())
+            .orElseThrow(() -> new BadRequestException("There's no such Model with id " + modelDto.getId()));
         updateModelFields(modelDto, modelToUpdate);
         entityManager.clear();
         checkIfModelExist(modelMapper.modelToModelDto(modelToUpdate));
@@ -95,9 +98,10 @@ public class ModelServiceImpl implements ModelService {
     }
 
     private void checkIfModelExist(ModelDto modelDto) {
-        modelRepository.findByNameAndYearAndBrandName(modelDto.getName(), modelDto.getYear(), modelDto.getBrand().getName()).ifPresent(modelDb -> {
-            throw new BadRequestException("Model with the same Brand, Name, and Year already exists");
-        });
+        modelRepository.findByNameAndYearAndBrandName(modelDto.getName(), modelDto.getYear(), modelDto.getBrand().getName())
+            .ifPresent(modelDb -> {
+                throw new BadRequestException("Model with the same Brand, Name, and Year already exists");
+            });
     }
 
     @Override
@@ -106,10 +110,31 @@ public class ModelServiceImpl implements ModelService {
         modelRepository.deleteById(id);
     }
 
+    @Override
+    public Page<ModelDto> searchModels(String brandName, String modelName, Integer minYear, Integer maxYear, String typeNames, Pageable pageable) {
+        return modelMapper.modelPageToModelDtoPage(modelRepository.findModelsByFilters(brandName, modelName, minYear, maxYear, typeNames, pageable));
+    }
+
+    @Override
+    public void sortFieldValidation(String sortField) {
+        if (!("id".equals(sortField) || "name".equals(sortField) || "year".equals(sortField) || "brand".equals(sortField) || "types".equals(sortField))) {
+            throw new BadRequestException("Invalid sort value: " + sortField);
+        }
+    }
+
+    @Override
+    public String orderValidation(String sortOrder) {
+        if ("desc".equals(sortOrder)) {
+            return "desc";
+        } else {
+            return "asc";
+        }
+    }
+
     private void updateModelFields(ModelDto modelDto, Model model) {
 
         Optional.ofNullable(modelDto.getName())
-            .ifPresent(modelName -> model.setName(modelDto.getName()));
+            .ifPresent(model::setName);
 
         Optional.ofNullable(modelDto.getYear())
             .ifPresent(modelYear -> model.setYear(modelDto.getYear()));
@@ -122,8 +147,8 @@ public class ModelServiceImpl implements ModelService {
             });
 
         Optional.ofNullable(modelDto.getTypes())
-            .ifPresent(typesFromForm -> {
-                List<String> typeNames = typesFromForm.stream()
+            .ifPresent(typesDto -> {
+                List<String> typeNames = typesDto.stream()
                     .map(TypeDto::getName)
                     .map(String::trim)
                     .toList();
@@ -138,16 +163,11 @@ public class ModelServiceImpl implements ModelService {
     }
 
     public String generateUniqueId() {
-        Random random = new Random();
-        StringBuilder generatedId;
+        String generatedId;
         do {
-            generatedId = new StringBuilder();
-            for (int i = 0; i < ID_LENGTH; i++) {
-                int index = random.nextInt(CHARACTERS.length());
-                generatedId.append(CHARACTERS.charAt(index));
-            }
-        } while (modelRepository.findById(generatedId.toString()).isPresent());
-        return generatedId.toString();
+            generatedId = RandomStringUtils.randomAlphanumeric(ID_LENGTH);
+        } while (modelRepository.findById(generatedId).isPresent());
+        return generatedId;
     }
 
     private List<RawLine> readAllLines() {

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ModelRestControllerIntegrationTest {
+class ModelControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -110,13 +110,13 @@ class ModelRestControllerIntegrationTest {
         modelToDelete.setName("TEST");
         modelToDelete.setYear(2024);
 
-        Brand brand = brandRepository.findByName("Audi").orElseThrow(
-            () -> new BadRequestException("Brand with this name does not exist"));
+        Brand brand = brandRepository.findByName("Audi")
+            .orElseThrow(() -> new BadRequestException("Brand with this name does not exist"));
         modelToDelete.setBrand(brand);
 
         List<Type> types = new ArrayList<>();
-        Type type = typeRepository.findByName("Sedan").orElseThrow(
-            () -> new BadRequestException("Type with this name does not exist"));
+        Type type = typeRepository.findByName("Sedan")
+            .orElseThrow(() -> new BadRequestException("Type with this name does not exist"));
         types.add(type);
         modelToDelete.setTypes(types);
 

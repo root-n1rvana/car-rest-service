@@ -1,7 +1,6 @@
 package ua.foxminded.javaspring.kocherga.carservice.service.impl;
 
 import jakarta.transaction.Transactional;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ua.foxminded.javaspring.kocherga.carservice.models.Type;
 import ua.foxminded.javaspring.kocherga.carservice.models.dto.TypeDto;
@@ -12,7 +11,6 @@ import ua.foxminded.javaspring.kocherga.carservice.service.exceptions.BadRequest
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TypeServiceImpl implements TypeService {
@@ -32,15 +30,15 @@ public class TypeServiceImpl implements TypeService {
 
     @Override
     public TypeDto findById(Long id) {
-        Type type = typeRepository.findById(id).orElseThrow(
-            () -> new BadRequestException("There's no such type with id " + id));
+        Type type = typeRepository.findById(id)
+            .orElseThrow(() -> new BadRequestException("There's no such type with id " + id));
         return typeMapper.typeToTypeDto(type);
     }
 
     @Override
     public TypeDto findByName(String name) {
-        Type type = typeRepository.findByName(name).orElseThrow(
-            () -> new BadRequestException("There's no such type with name " + name));
+        Type type = typeRepository.findByName(name)
+            .orElseThrow(() -> new BadRequestException("There's no such type with name " + name));
         return typeMapper.typeToTypeDto(type);
     }
 
@@ -58,8 +56,8 @@ public class TypeServiceImpl implements TypeService {
     @Override
     @Transactional
     public void update(TypeDto typeDto) {
-        Type typeToUpdate = typeRepository.findById(typeDto.getId()).orElseThrow(
-            () -> new BadRequestException("There's no such type with id " + typeDto.getId()));
+        Type typeToUpdate = typeRepository.findById(typeDto.getId())
+            .orElseThrow(() -> new BadRequestException("There's no such type with id " + typeDto.getId()));
         typeToUpdate.setName(typeDto.getName());
         typeRepository.save(typeToUpdate);
     }

@@ -1,6 +1,5 @@
 package ua.foxminded.javaspring.kocherga.carservice.service;
 
-import jakarta.transaction.Transactional;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 import ua.foxminded.javaspring.kocherga.carservice.models.dto.BrandDto;
 
@@ -18,6 +17,5 @@ public interface BrandService {
 
     void update(BrandDto brandDto);
 
-    @Transactional
     void delete(Long id);
 }

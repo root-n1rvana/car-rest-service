@@ -1,7 +1,6 @@
 package ua.foxminded.javaspring.kocherga.carservice.service.impl;
 
 import jakarta.transaction.Transactional;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 import ua.foxminded.javaspring.kocherga.carservice.models.dto.BrandDto;
@@ -15,6 +14,7 @@ import java.util.List;
 @Service
 public class BrandServiceImpl implements BrandService {
 
+    private static final String NO_SUCH_BRAND_ID_MSG = "There's no such brand with id ";
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
 
@@ -30,15 +30,15 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public BrandDto findById(Long id) {
-        Brand brand = brandRepository.findById(id).orElseThrow(
-            () -> new BadRequestException("There's no such brand with id " + id));
+        Brand brand = brandRepository.findById(id)
+            .orElseThrow(() -> new BadRequestException(NO_SUCH_BRAND_ID_MSG + id));
         return brandMapper.brandToBrandDto(brand);
     }
 
     @Override
     public Brand findByName(String name) {
-        return brandRepository.findByName(name).orElseThrow(
-            () -> new BadRequestException("There's no such brand with name " + name));
+        return brandRepository.findByName(name)
+            .orElseThrow(() -> new BadRequestException("There's no such brand with name " + name));
     }
 
     @Override
@@ -50,8 +50,8 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public void update(BrandDto brandDto) {
-        Brand brandToUpdate = brandRepository.findById(brandDto.getId()).orElseThrow(
-            () -> new BadRequestException("There's no such brand with id " + brandDto.getId()));
+        Brand brandToUpdate = brandRepository.findById(brandDto.getId())
+            .orElseThrow(() -> new BadRequestException(NO_SUCH_BRAND_ID_MSG + brandDto.getId()));
         brandToUpdate.setName(brandDto.getName());
         brandRepository.save(brandToUpdate);
     }

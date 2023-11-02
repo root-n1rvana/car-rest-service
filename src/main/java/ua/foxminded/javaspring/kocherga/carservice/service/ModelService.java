@@ -26,6 +26,12 @@ public interface ModelService {
     @Transactional
     void delete(String id);
 
+    Page<ModelDto> searchModels(String brandName, String modelName, Integer minYear, Integer maxYear, String typeNames, Pageable pageable);
+
+    void sortFieldValidation(String sortField);
+
+    String orderValidation(String sortOrder);
+
     @Transactional
     void saveModelsInBatch(List<Model> models);
 }

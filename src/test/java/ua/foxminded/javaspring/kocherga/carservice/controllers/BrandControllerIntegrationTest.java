@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class BrandRestControllerIntegrationTest {
+class BrandControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -72,14 +72,14 @@ class BrandRestControllerIntegrationTest {
     @Test
     public void testUpdateBrand() throws Exception {
         String expectedName = "UpdatedBrandName";
-        String brandDtoJson = "{\"name\":\"" + expectedName + "\"}";
         long existingBrandId = 1;
+        String brandDtoJson = "{\"id\": " + existingBrandId + ",\"name\":\"" + expectedName + "\"}";
 
 
         assertTrue(brandRepository.findById(existingBrandId).isPresent());
         assertNotEquals(brandRepository.findById(existingBrandId).get().getName(), expectedName);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand/" + existingBrandId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(brandDtoJson))
             .andExpect(status().isNoContent())

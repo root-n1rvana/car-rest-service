@@ -8,28 +8,25 @@ import ua.foxminded.javaspring.kocherga.carservice.models.dto.BrandDto;
 import ua.foxminded.javaspring.kocherga.carservice.service.BrandService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/brand")
-public class BrandRestController {
+public class BrandController {
 
     private final BrandService brandService;
 
-    public BrandRestController(BrandService brandService) {
+    public BrandController(BrandService brandService) {
         this.brandService = brandService;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<BrandDto>> getAllBrands() {
-        List<BrandDto> brandsDto = brandService.findAll();
-        return ResponseEntity.of(Optional.ofNullable(brandsDto));
+    public List<BrandDto> getAllBrands() {
+        return brandService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BrandDto> getBrand(@PathVariable("id") Long id) {
-        BrandDto brandDto = brandService.findById(id);
-        return ResponseEntity.ok(brandDto);
+    public BrandDto getBrand(@PathVariable("id") Long id) {
+        return brandService.findById(id);
     }
 
     @PostMapping
@@ -38,9 +35,8 @@ public class BrandRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateBrand(@PathVariable("id") Long id, @RequestBody @Valid BrandDto brandDto) {
-        brandDto.setId(id);
+    @PutMapping
+    public ResponseEntity<Void> updateBrand(@RequestBody @Valid BrandDto brandDto) {
         brandService.update(brandDto);
         return ResponseEntity.noContent().build();
     }

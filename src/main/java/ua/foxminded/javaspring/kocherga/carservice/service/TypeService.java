@@ -23,6 +23,5 @@ public interface TypeService {
     @Transactional
     void update(TypeDto typeDto);
 
-    @Transactional
     void delete(Long id);
 }
