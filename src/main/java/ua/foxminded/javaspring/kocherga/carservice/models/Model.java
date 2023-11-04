@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "models"/*, uniqueConstraints = {
+@Table(name = "models", uniqueConstraints = {
     @UniqueConstraint(name = "models_ck", columnNames = {"year", "name", "brand_id"})
-}*/)
+})
 public class Model {
 
     @Id
@@ -20,11 +20,11 @@ public class Model {
     @Column(name = "year", length = 4, nullable = false)
     private Integer year;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "models_types",
         joinColumns = @JoinColumn(name = "model_id"),

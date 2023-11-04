@@ -15,8 +15,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,7 +37,6 @@ class BrandControllerIntegrationTest {
 
     @Test
     public void testGetExactBrand() throws Exception {
-
         long brandId = 1;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/brand/" + brandId))
@@ -48,9 +46,18 @@ class BrandControllerIntegrationTest {
     }
 
     @Test
+    public void testGetExactBrand_NoSuchBrandIdError() throws Exception {
+        long brandId = 0;
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/brand/" + brandId))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("There's no such brand with id 0"));
+    }
+
+    @Test
     public void testCreateBrand() throws Exception {
         String testBrandName = "TestBrandName";
-        String brandDtoJson = "{\"name\":\"" + testBrandName + "\"}";
+        String brandDtoJson = String.format("{\"name\":\"%s\"}", testBrandName);
 
         // Verify that the brand does not exist in the database
         assertFalse(brandRepository.findByName(testBrandName).isPresent());
@@ -73,7 +80,7 @@ class BrandControllerIntegrationTest {
     public void testUpdateBrand() throws Exception {
         String expectedName = "UpdatedBrandName";
         long existingBrandId = 1;
-        String brandDtoJson = "{\"id\": " + existingBrandId + ",\"name\":\"" + expectedName + "\"}";
+        String brandDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", existingBrandId, expectedName);
 
 
         assertTrue(brandRepository.findById(existingBrandId).isPresent());
@@ -93,6 +100,37 @@ class BrandControllerIntegrationTest {
         Brand brand = brandRepository.findById(existingBrandId).get();
         brand.setName("Audi");
         brandRepository.save(brand);
+    }
+
+    @Test
+    public void testUpdateBrand_BrandExistError() throws Exception {
+        String existingBrandName = "Dodge";
+        long existingBrandId = 1;
+        String brandDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", existingBrandId, existingBrandName);
+
+        assertTrue(brandRepository.findById(existingBrandId).isPresent());
+        assertNotEquals(brandRepository.findById(existingBrandId).get().getName(), existingBrandName);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(brandDtoJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Brand with same 'name' already exist"));
+    }
+
+    @Test
+    public void testUpdateBrand_NoSuchBrandIdError() throws Exception {
+        String newBrandName = "newBrand";
+        long notExistingBrandId = 0;
+        String brandDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", notExistingBrandId, newBrandName);
+
+        assertFalse(brandRepository.findById(notExistingBrandId).isPresent());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(brandDtoJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("There's no such brand with id 0"));
     }
 
     @Test

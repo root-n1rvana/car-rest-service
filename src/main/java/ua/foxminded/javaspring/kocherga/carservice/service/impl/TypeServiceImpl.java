@@ -9,11 +9,13 @@ import ua.foxminded.javaspring.kocherga.carservice.repository.TypeRepository;
 import ua.foxminded.javaspring.kocherga.carservice.service.TypeService;
 import ua.foxminded.javaspring.kocherga.carservice.service.exceptions.BadRequestException;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
 public class TypeServiceImpl implements TypeService {
+
+    private static final String NO_SUCH_TYPE_ID_MSG = "There's no such type with id %d";
+    private static final String TYPE_NAME_EXIST_MSG = "Type with same 'name' already exist";
 
     private final TypeRepository typeRepository;
     private final TypeMapper typeMapper;
@@ -31,35 +33,32 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public TypeDto findById(Long id) {
         Type type = typeRepository.findById(id)
-            .orElseThrow(() -> new BadRequestException("There's no such type with id " + id));
+            .orElseThrow(() -> new BadRequestException(String.format(NO_SUCH_TYPE_ID_MSG, id)));
         return typeMapper.typeToTypeDto(type);
-    }
-
-    @Override
-    public TypeDto findByName(String name) {
-        Type type = typeRepository.findByName(name)
-            .orElseThrow(() -> new BadRequestException("There's no such type with name " + name));
-        return typeMapper.typeToTypeDto(type);
-    }
-
-    @Override
-    public List<Type> findByNameIn(Collection<String> names) {
-        return typeRepository.findByNameIn(names);
     }
 
     @Override
     @Transactional
     public void create(TypeDto typeDto) {
+        checkIfTypeExist(typeDto);
         typeRepository.save(typeMapper.typeDtoToType(typeDto));
     }
 
     @Override
     @Transactional
     public void update(TypeDto typeDto) {
+        checkIfTypeExist(typeDto);
         Type typeToUpdate = typeRepository.findById(typeDto.getId())
-            .orElseThrow(() -> new BadRequestException("There's no such type with id " + typeDto.getId()));
+            .orElseThrow(() -> new BadRequestException(String.format(NO_SUCH_TYPE_ID_MSG, typeDto.getId())));
         typeToUpdate.setName(typeDto.getName());
         typeRepository.save(typeToUpdate);
+    }
+
+    private void checkIfTypeExist(TypeDto typeDto) {
+        typeRepository.findByName(typeDto.getName())
+            .ifPresent(type -> {
+                throw new BadRequestException(TYPE_NAME_EXIST_MSG);
+            });
     }
 
     @Override

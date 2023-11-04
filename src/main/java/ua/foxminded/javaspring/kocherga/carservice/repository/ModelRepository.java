@@ -13,16 +13,17 @@ import java.util.Optional;
 @Repository
 public interface ModelRepository extends JpaRepository<Model, String> {
 
-    Optional<Model> findByNameAndYearAndBrandName(String name, int year, String brandName);
+    Optional<Model> findByNameAndYearAndBrandName(String name, Integer year, String brandName);
 
     Optional<Model> findByName(String name);
 
-    @Query("SELECT DISTINCT m FROM Model m " +
-           "WHERE (:brand IS NULL OR m.brand.name = :brand) " +
-           "AND (:name IS NULL OR m.name = :name) " +
-           "AND (:minYear IS NULL OR m.year >= :minYear) " +
-           "AND (:maxYear IS NULL OR m.year <= :maxYear) " +
-           "AND (:typeName IS NULL OR EXISTS (SELECT t FROM m.types t WHERE t.name = :typeName))")
+    @Query("""
+        SELECT DISTINCT m FROM Model m
+        WHERE (m.brand.name = COALESCE(:brand, m.brand.name))
+        AND (m.name = COALESCE(:name, m.name))
+        AND (m.year >= COALESCE(:minYear, m.year))
+        AND (m.year <= COALESCE(:maxYear, m.year))
+        AND (:typeName IS NULL OR EXISTS (SELECT t FROM m.types t WHERE t.name = :typeName))""")
     Page<Model> findModelsByFilters(@Param("brand") String brand,
                                     @Param("name") String model,
                                     @Param("minYear") Integer minYear,

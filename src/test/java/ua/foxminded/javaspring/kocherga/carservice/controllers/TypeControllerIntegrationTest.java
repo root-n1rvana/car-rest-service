@@ -15,8 +15,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,13 +47,22 @@ class TypeControllerIntegrationTest {
     }
 
     @Test
+    public void testGetExactType_NoSuchTypeIdError() throws Exception {
+
+        long typeId = 0;
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/type/" + typeId))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("There's no such type with id 0"));
+    }
+
+    @Test
     public void testCreateType() throws Exception {
         String testTypeName = "TestTypeName";
-        String typeDtoJson = "{\"name\":\"" + testTypeName + "\"}";
+        String typeDtoJson = String.format("{\"name\":\"%s\"}", testTypeName);
 
         // Verify that the brand does not exist in the database
         assertFalse(typeRepository.findByName(testTypeName).isPresent());
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/type")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +82,7 @@ class TypeControllerIntegrationTest {
     public void testUpdateType() throws Exception {
         String expectedName = "UpdatedTypeName";
         long existingTypeId = 1;
-        String typeDtoJson = "{\"id\": " + existingTypeId + ",\"name\":\"" + expectedName + "\"}";
-
+        String typeDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", existingTypeId, expectedName);
 
         assertTrue(typeRepository.findById(existingTypeId).isPresent());
         assertNotEquals(typeRepository.findById(existingTypeId).get().getName(), expectedName);
@@ -94,6 +101,36 @@ class TypeControllerIntegrationTest {
         Type type = typeRepository.findById(existingTypeId).get();
         type.setName("SUV");
         typeRepository.save(type);
+    }
+
+    @Test
+    public void testUpdateType_NoSuchTypeIdError() throws Exception {
+        String notExistingTypeName = "newType";
+        long notExistingBrandId = 0;
+        String typeDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", notExistingBrandId, notExistingTypeName);
+
+        assertFalse(typeRepository.findById(notExistingBrandId).isPresent());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(typeDtoJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("There's no such type with id 0"));
+    }
+
+    @Test
+    public void testUpdateType_TypeNameExistError() throws Exception {
+        String existingTypeName = "Sedan";
+        long existingBrandId = 1;
+        String typeDtoJson = String.format("{\"id\": %d,\"name\":\"%s\"}", existingBrandId, existingTypeName);
+
+        assertTrue(typeRepository.findByName(existingTypeName).isPresent());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(typeDtoJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Type with same 'name' already exist"));
     }
 
     @Test

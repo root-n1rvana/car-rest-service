@@ -2,9 +2,6 @@ package ua.foxminded.javaspring.kocherga.carservice.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +21,9 @@ public class ModelController {
     @GetMapping("/all")
     public Page<ModelDto> getAllModels(@RequestParam(value = "page", defaultValue = "0") int page,
                                        @RequestParam(value = "size", defaultValue = "10") int size,
-                                       @RequestParam(value = "sort", defaultValue = "id") String sortField,
-                                       @RequestParam(value = "order", defaultValue = "asc") String sortOrder) {
-        modelService.sortFieldValidation(sortField);
-        Sort.Direction direction = Sort.Direction.fromString(modelService.orderValidation(sortOrder));
-        Sort sort = Sort.by(direction, sortField);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return modelService.findAll(pageable);
+                                       @RequestParam(value = "sort", defaultValue = "id") String sort,
+                                       @RequestParam(value = "order", defaultValue = "asc") String order) {
+        return modelService.findAll(page, size, sort, order);
     }
 
     @GetMapping("/{id}")
@@ -44,10 +37,8 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newModel);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateBrand(@PathVariable("id") String id,
-                                            @RequestBody @Valid ModelDto modelDto) {
-        modelDto.setId(id);
+    @PutMapping
+    public ResponseEntity<Void> updateModel(@RequestBody @Valid ModelDto modelDto) {
         modelService.update(modelDto);
         return ResponseEntity.noContent().build();
     }
@@ -65,8 +56,9 @@ public class ModelController {
                                        @RequestParam(value = "maxYear", required = false) Integer maxYear,
                                        @RequestParam(value = "typesName", required = false) String typesName,
                                        @RequestParam(value = "page", defaultValue = "0") int page,
-                                       @RequestParam(value = "size", defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return modelService.searchModels(brandName, modelName, minYear, maxYear, typesName, pageable);
+                                       @RequestParam(value = "sort", defaultValue = "id") String sort,
+                                       @RequestParam(value = "size", defaultValue = "10") int size,
+                                       @RequestParam(value = "order", defaultValue = "asc") String order) {
+        return modelService.searchModels(brandName, modelName, minYear, maxYear, typesName, page, size, sort, order);
     }
 }
