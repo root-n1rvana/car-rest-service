@@ -1,5 +1,6 @@
 package ua.foxminded.javaspring.kocherga.carservice.controllers;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import ua.foxminded.javaspring.kocherga.carservice.models.Brand;
 import ua.foxminded.javaspring.kocherga.carservice.models.Model;
 import ua.foxminded.javaspring.kocherga.carservice.models.Type;
@@ -42,6 +44,13 @@ class ModelControllerIntegrationTest {
 
     @Autowired
     private TypeRepository typeRepository;
+
+    private static ObjectMapper objectMapper;
+
+    @BeforeAll
+    public static void setUp() {
+        objectMapper = new ObjectMapper();
+    }
 
     @Test
     public void testGetAllModels() throws Exception {
@@ -145,13 +154,39 @@ class ModelControllerIntegrationTest {
         assertFalse(modelRepository.findByName(testModelNameFromJson).isPresent());
     }
 
+    private String readJSONFile(String filePath) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        try {
+            InputStream inputStream = classLoader.getResourceAsStream(filePath);
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                return stringBuilder.toString();
+            } else {
+                throw new IllegalArgumentException("File not found: " + filePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Test
     public void testUpdateModel() throws Exception {
         String existingModelId = "ZRgPP9dBMm";
         String expectedNewName = "ABC";
         Integer expectedNewYear = 2039;
 
-        String jsonDataForUpdate = String.format("{\"id\": \"%s\",\"name\": \"%s\",\"year\":%d}", existingModelId, expectedNewName, expectedNewYear);
+        Model modelToUpdate = new Model();
+        modelToUpdate.setId(existingModelId);
+        modelToUpdate.setName(expectedNewName);
+        modelToUpdate.setYear(expectedNewYear);
+
+        String jsonDataForUpdate = objectMapper.writeValueAsString(modelToUpdate);
 
         // Verify what name and year ARE NOT as expected
         modelRepository.findById(existingModelId)
@@ -188,7 +223,12 @@ class ModelControllerIntegrationTest {
         Integer expectedYear = 2020;
         String expectedBrand = "Audi";
 
-        String jsonDataForUpdate = String.format("{\"id\": \"%s\",\"name\": \"%s\",\"year\":%d}", existingModelId, expectedName, expectedYear);
+        Model modelToUpdate = new Model();
+        modelToUpdate.setId(existingModelId);
+        modelToUpdate.setName(expectedName);
+        modelToUpdate.setYear(expectedYear);
+        modelToUpdate.setBrand(new Brand(expectedBrand));
+        String jsonDataForUpdate = objectMapper.writeValueAsString(modelToUpdate);
 
         // Verify what name, year and brand from database are same as expected
         modelRepository.findById(existingModelId)
@@ -235,26 +275,5 @@ class ModelControllerIntegrationTest {
 
         // Verify that the brand is deleted
         assertFalse(modelRepository.existsById(modelIdToDelete));
-    }
-
-    private String readJSONFile(String filePath) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        try {
-            InputStream inputStream = classLoader.getResourceAsStream(filePath);
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-                return stringBuilder.toString();
-            } else {
-                throw new IllegalArgumentException("File not found: " + filePath);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
