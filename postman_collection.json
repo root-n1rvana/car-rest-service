@@ -1,0 +1,583 @@
+{
+    "info": {
+        "_postman_id": "c0074937-3dde-41b1-9f90-5b26b076539c",
+        "name": "New Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "30836853",
+        "_collection_link": "https://www.postman.com/material-architect-63360795/workspace/my-workspace/collection/30836853-c0074937-3dde-41b1-9f90-5b26b076539c?action=share&creator=30836853&source=collection_link"
+    },
+    "item": [
+        {
+            "name": "car-rest-api-kocherga",
+            "item": [
+                {
+                    "name": "Brand",
+                    "item": [
+                        {
+                            "name": "api/v1/brand/all",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/brand/all",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "brand",
+                                        "all"
+                                    ]
+                                },
+                                "description": "gett all Brands"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/brand/1",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/brand/1",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "brand",
+                                        "1"
+                                    ]
+                                },
+                                "description": "get Brand with id=1"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/brand",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"name\": \"ZAZ\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/brand",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "brand"
+                                    ]
+                                },
+                                "description": "create new Brand with name = testName"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/brand",
+                            "request": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"id\": 65,\r\n    \"name\": \"ZAZIK\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/brand",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "brand"
+                                    ]
+                                },
+                                "description": "change brand name with id= 65 to `newBrandName`"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/brand/65",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/brand/65",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "brand",
+                                        "65"
+                                    ]
+                                },
+                                "description": "delete brand with id=65"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Type",
+                    "item": [
+                        {
+                            "name": "api/v1/type/all",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/type/all",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "type",
+                                        "all"
+                                    ]
+                                },
+                                "description": "Get all Types from db"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/type/1",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/type/1",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "type",
+                                        "1"
+                                    ]
+                                },
+                                "description": "get Type with id=1"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/type",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"name\": \"testName\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/type",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "type"
+                                    ]
+                                },
+                                "description": "create new Type with name = testName"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/type",
+                            "request": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"id\": 11,\r\n    \"name\": \"newTypeName\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/type",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "type"
+                                    ]
+                                },
+                                "description": "change name of Type with id 11 to `newTypeName`"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/type/11",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/type/11",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "type",
+                                        "11"
+                                    ]
+                                },
+                                "description": "delete Type with id = 11"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Model",
+                    "item": [
+                        {
+                            "name": "api/v1/model/all",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model/all?page=3&size=20&sort=year&order=desc",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model",
+                                        "all"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "3",
+                                            "description": "page number"
+                                        },
+                                        {
+                                            "key": "size",
+                                            "value": "20",
+                                            "description": "Model objects per page"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "year",
+                                            "description": "sort by selected row: id (default) or name or year or brand or types"
+                                        },
+                                        {
+                                            "key": "order",
+                                            "value": "desc",
+                                            "description": "asc(default) or desc"
+                                        }
+                                    ]
+                                },
+                                "description": "get Models of page = 3 with page size = 20 rows"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/model/search",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model/search?brandName=Audi&modelName=S4&minYear=2010&maxYear=2015&typesName=Sedan&size=20&sort=year&oder=asc",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model",
+                                        "search"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "brandName",
+                                            "value": "Audi"
+                                        },
+                                        {
+                                            "key": "modelName",
+                                            "value": "S4"
+                                        },
+                                        {
+                                            "key": "minYear",
+                                            "value": "2010"
+                                        },
+                                        {
+                                            "key": "maxYear",
+                                            "value": "2015"
+                                        },
+                                        {
+                                            "key": "typesName",
+                                            "value": "Sedan"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "size",
+                                            "value": "20"
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "year",
+                                            "description": "sort by selected row: id (default) or name or year or brand or types"
+                                        },
+                                        {
+                                            "key": "oder",
+                                            "value": "asc",
+                                            "description": "asc(default) or desc"
+                                        }
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/model/cptB1C1NSL",
+                            "protocolProfileBehavior": {
+                                "disableBodyPruning": true
+                            },
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model/cptB1C1NSL",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model",
+                                        "cptB1C1NSL"
+                                    ]
+                                },
+                                "description": "get Model with id = cptB1C1NSL"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/model",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"name\": \"TEST3\",\r\n    \"year\": 2043,\r\n    \"brand\": {\r\n        \"name\": \"ZAZ\"\r\n    },\r\n    \"types\": [\r\n        {\r\n            \"name\": \"someNewType\"\r\n        },\r\n        {\r\n            \"name\": \"Pickup\"\r\n        }\r\n    ]\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model"
+                                    ]
+                                },
+                                "description": "Add new Model with data from json"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/model",
+                            "request": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n    \"id\": \"71IZiKW9z3\",\r\n    \"name\": \"newTestName\",\r\n    \"year\": 2039\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model"
+                                    ]
+                                },
+                                "description": "Chnage name and year (json data) of Model with id = jWNjG3Z07X"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "api/v1/model/jWNjG3Z07X",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "http://localhost:8080/api/v1/model/jWNjG3Z07X",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "8080",
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "model",
+                                        "jWNjG3Z07X"
+                                    ]
+                                },
+                                "description": "delete Model with Id = jWNjG3Z07X"
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ],
+            "auth": {
+                "type": "noauth"
+            },
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            ""
+                        ]
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            ""
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

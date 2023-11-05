@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+    db:
+        image: postgres:15-alpine
+        container_name: car_rest_db_cont
+        environment:
+            POSTGRES_USER: kocherga
+            POSTGRES_PASSWORD: kocherga
+            POSTGRES_DB: car_service_db
+        ports:
+            - '5432:5432'
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: car_rest_cont
+        depends_on:
+            - db
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://car_rest_db_cont:5432/car_service_db
+            - SPRING_DATASOURCE_USERNAME=kocherga
+            - SPRING_DATASOURCE_PASSWORD=kocherga
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./logs_docker:/app/logs
