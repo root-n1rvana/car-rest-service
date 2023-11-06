@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,6 +26,9 @@ class TypeControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private TypeRepository typeRepository;
@@ -65,6 +71,7 @@ class TypeControllerIntegrationTest {
         assertFalse(typeRepository.findByName(testTypeName).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/type")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(typeDtoJson))
             .andExpect(status().isCreated())
@@ -88,6 +95,7 @@ class TypeControllerIntegrationTest {
         assertNotEquals(typeRepository.findById(existingTypeId).get().getName(), expectedName);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(typeDtoJson))
             .andExpect(status().isNoContent())
@@ -112,6 +120,7 @@ class TypeControllerIntegrationTest {
         assertFalse(typeRepository.findById(notExistingBrandId).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(typeDtoJson))
             .andExpect(status().isBadRequest())
@@ -127,6 +136,7 @@ class TypeControllerIntegrationTest {
         assertTrue(typeRepository.findByName(existingTypeName).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/type")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(typeDtoJson))
             .andExpect(status().isBadRequest())
@@ -140,6 +150,7 @@ class TypeControllerIntegrationTest {
         long existingTypeId = typeToDelete.getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/type/" + existingTypeId)
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isNoContent());
 

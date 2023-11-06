@@ -5,7 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -35,6 +39,9 @@ class ModelControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private ModelRepository modelRepository;
@@ -140,6 +147,7 @@ class ModelControllerIntegrationTest {
         assert modelDtoJson != null;
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/model")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(modelDtoJson))
             .andExpect(status().isCreated())
@@ -196,6 +204,7 @@ class ModelControllerIntegrationTest {
             });
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/model")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonDataForUpdate))
             .andExpect(status().isNoContent())
@@ -239,6 +248,7 @@ class ModelControllerIntegrationTest {
             });
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/model")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonDataForUpdate))
             .andExpect(status().isBadRequest())
@@ -270,6 +280,7 @@ class ModelControllerIntegrationTest {
         assertTrue(modelRepository.existsById(modelIdToDelete));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/model/" + modelIdToDelete)
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isNoContent());
 

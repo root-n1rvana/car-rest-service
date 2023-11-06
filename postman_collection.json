@@ -556,7 +556,78 @@
                 }
             ],
             "auth": {
-                "type": "noauth"
+                "type": "oauth2",
+                "oauth2": [
+                    {
+                        "key": "clientId",
+                        "value": "{{client_id}}",
+                        "type": "string"
+                    },
+                    {
+                        "key": "clientSecret",
+                        "value": "{{client_secret}}",
+                        "type": "string"
+                    },
+                    {
+                        "key": "refreshRequestParams",
+                        "value": [
+                            {
+                                "key": "audience",
+                                "value": "https://car-service/api",
+                                "enabled": true,
+                                "send_as": "request_body"
+                            }
+                        ],
+                        "type": "any"
+                    },
+                    {
+                        "key": "tokenRequestParams",
+                        "value": [
+                            {
+                                "key": "audience",
+                                "value": "https://car-service/api",
+                                "enabled": true,
+                                "send_as": "request_body"
+                            }
+                        ],
+                        "type": "any"
+                    },
+                    {
+                        "key": "addTokenTo",
+                        "value": "header",
+                        "type": "string"
+                    },
+                    {
+                        "key": "client_authentication",
+                        "value": "header",
+                        "type": "string"
+                    },
+                    {
+                        "key": "grant_type",
+                        "value": "client_credentials",
+                        "type": "string"
+                    },
+                    {
+                        "key": "tokenName",
+                        "value": "postman",
+                        "type": "string"
+                    },
+                    {
+                        "key": "authUrl",
+                        "value": "https://dev-fch5psxylprt7tmt.eu.auth0.com/oauth/token",
+                        "type": "string"
+                    },
+                    {
+                        "key": "accessTokenUrl",
+                        "value": "https://dev-fch5psxylprt7tmt.eu.auth0.com/oauth/token",
+                        "type": "string"
+                    },
+                    {
+                        "key": "redirect_uri",
+                        "value": "https://car-service/api",
+                        "type": "string"
+                    }
+                ]
             },
             "event": [
                 {
@@ -578,6 +649,16 @@
                     }
                 }
             ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "client_id",
+            "value": "pp8zfOLlwh9QfnzOmYYD7SqecnZZ6A4t"
+        },
+        {
+            "key": "client_secret",
+            "value": "cBHwQ1NyHm9oiBor-hhRTxPZ44A7wOmIxN6As6157vHMU3lmHLJno06P_04oZ80y"
         }
     ]
 }

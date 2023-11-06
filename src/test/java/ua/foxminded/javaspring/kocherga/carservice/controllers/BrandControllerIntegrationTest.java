@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,6 +26,9 @@ class BrandControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private BrandRepository brandRepository;
@@ -63,6 +69,7 @@ class BrandControllerIntegrationTest {
         assertFalse(brandRepository.findByName(testBrandName).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/brand")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(brandDtoJson))
             .andExpect(status().isCreated())
@@ -87,6 +94,7 @@ class BrandControllerIntegrationTest {
         assertNotEquals(brandRepository.findById(existingBrandId).get().getName(), expectedName);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(brandDtoJson))
             .andExpect(status().isNoContent())
@@ -112,6 +120,7 @@ class BrandControllerIntegrationTest {
         assertNotEquals(brandRepository.findById(existingBrandId).get().getName(), existingBrandName);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(brandDtoJson))
             .andExpect(status().isBadRequest())
@@ -127,6 +136,7 @@ class BrandControllerIntegrationTest {
         assertFalse(brandRepository.findById(notExistingBrandId).isPresent());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/brand")
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(brandDtoJson))
             .andExpect(status().isBadRequest())
@@ -140,6 +150,7 @@ class BrandControllerIntegrationTest {
         long existingBrandId = brandToDelete.getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/brand/" + existingBrandId)
+                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isNoContent());
 
